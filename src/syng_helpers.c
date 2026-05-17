@@ -29,3 +29,20 @@ I64 syng_rs_kmer_hash_max(const KmerHash *kh) {
 int syng_rs_kmer_hash_len(const KmerHash *kh) {
     return kh->len;
 }
+
+/* SyngBWT struct (syng.h): node/path fields are Array (opaque to Rust).
+ * Expose their `max` counts via these accessors. arrayMax(ar) is a CPP
+ * macro in array.h that returns (ar)->max. */
+I64 syng_rs_gbwt_node_count(const SyngBWT *sb) {
+    return arrayMax(sb->node);
+}
+
+I64 syng_rs_gbwt_path_count(const SyngBWT *sb) {
+    return arrayMax(sb->path);
+}
+
+/* Fixed syncmer length stored on the GBWT (sb->fixedLen).
+ * 0 means variable-length syncmers (use sb->length array per node). */
+int syng_rs_gbwt_fixed_len(const SyngBWT *sb) {
+    return sb->fixedLen;
+}

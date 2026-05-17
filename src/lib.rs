@@ -159,6 +159,12 @@ extern "C" {
     pub fn syng_rs_kmer_hash_max(kh: *const KmerHash) -> I64;
     /// Syncmer length in bases (kh->len). Useful for sizing DNA buffers.
     pub fn syng_rs_kmer_hash_len(kh: *const KmerHash) -> c_int;
+    /// Number of syncmer-graph nodes (arrayMax(sb->node)).
+    pub fn syng_rs_gbwt_node_count(sb: *const SyngBWT) -> I64;
+    /// Number of paths stored in the GBWT (arrayMax(sb->path)).
+    pub fn syng_rs_gbwt_path_count(sb: *const SyngBWT) -> I64;
+    /// Fixed syncmer length on the GBWT, or 0 if variable-length.
+    pub fn syng_rs_gbwt_fixed_len(sb: *const SyngBWT) -> c_int;
 }
 
 #[cfg(test)]
