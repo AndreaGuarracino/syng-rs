@@ -1,0 +1,3 @@
+[submodule "vendor/syng"]
+	path = vendor/syng
+	url = https://github.com/AndreaGuarracino/syng.git
