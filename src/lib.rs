@@ -148,7 +148,7 @@ extern "C" {
     ) -> bool;
 }
 
-// ─── ONElib.h (minimum: open/close OneFile to feed kmerHashReadOneFile etc.) ──
+// ─── ONElib.h ────────────────────────────────────────────────────────────────
 
 extern "C" {
     pub fn oneSchemaCreateFromText(text: *const c_char) -> *mut OneSchema;
@@ -161,6 +161,39 @@ extern "C" {
         n_threads: c_int,
     ) -> *mut OneFile;
     pub fn oneFileClose(vf: *mut OneFile);
+
+    /// Count records of `lineType` in the file.
+    /// `count` is the number of records of that type; `max` is the max
+    /// list-length seen across them; `total` is the sum of list lengths.
+    /// `max` and `total` may be NULL if not needed. Returns true on success.
+    pub fn oneStats(
+        of: *mut OneFile,
+        line_type: c_char,
+        count: *mut I64,
+        max: *mut I64,
+        total: *mut I64,
+    ) -> bool;
+
+    /// Seek to the i'th record (1-based) of `lineType`. Returns true on success.
+    pub fn oneGoto(of: *mut OneFile, line_type: c_char, i: I64) -> bool;
+
+    /// Read the next line into the file's buffer; returns the line's type
+    /// char (or 0 at end of file).
+    pub fn oneReadLine(of: *mut OneFile) -> c_char;
+
+    /// Field accessors (CPP macros in ONElib.h, re-exported as functions
+    /// by `src/syng_helpers.c`).
+    pub fn syng_rs_one_int(of: *mut OneFile, x: c_int) -> I64;
+    /// Length of the current list field (e.g. for STRING / DNA / INT_LIST).
+    pub fn syng_rs_one_len(of: *mut OneFile) -> I64;
+    /// Pointer to the current STRING field's bytes (NUL-terminated for
+    /// single strings; for string-lists use successive `oneNextString`
+    /// pointer arithmetic — not yet bound).
+    pub fn syng_rs_one_string(of: *mut OneFile) -> *const c_char;
+    /// Pointer to the current INT_LIST field's I64 values; length via `syng_rs_one_len`.
+    pub fn syng_rs_one_int_list(of: *mut OneFile) -> *const I64;
+    /// Pointer to the current DNA field's chars.
+    pub fn syng_rs_one_dna_char(of: *mut OneFile) -> *const c_char;
 }
 
 // syng.h defines `syngSchemaText` as a `static char *` global (internal

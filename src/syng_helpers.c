@@ -82,3 +82,32 @@ void syng_rs_seqhash_destroy(Seqhash *sh) {
 void syng_rs_seqhash_iterator_destroy(SeqhashIterator *si) {
     seqhashIteratorDestroy(si);
 }
+
+/* ─── ONElib field accessors ─────────────────────────────────────────
+ *
+ * The oneInt(), oneLen(), oneString(), oneIntList(), oneDNAchar()
+ * "accessors" in ONElib.h are CPP macros that index into the OneFile
+ * struct's `field[]` array. Macros can't cross the FFI boundary; expose
+ * them as real functions so Rust callers can read field values after
+ * each oneReadLine.
+ */
+
+I64 syng_rs_one_int(OneFile *of, int x) {
+    return oneInt(of, x);
+}
+
+I64 syng_rs_one_len(OneFile *of) {
+    return oneLen(of);
+}
+
+const char *syng_rs_one_string(OneFile *of) {
+    return oneString(of);
+}
+
+const I64 *syng_rs_one_int_list(OneFile *of) {
+    return oneIntList(of);
+}
+
+const char *syng_rs_one_dna_char(OneFile *of) {
+    return oneDNAchar(of);
+}
