@@ -90,11 +90,17 @@ extern "C" {
     pub fn kmerHashWriteOneFile(kh: *mut KmerHash, of: *mut OneFile) -> bool;
     pub fn kmerHashReadOneFile(of: *mut OneFile) -> *mut KmerHash;
 
-    /// Retrieve the i'th syncmer's DNA sequence (ASCII A/C/G/T).
+    /// Retrieve the i'th syncmer's DNA sequence (ASCII a/c/g/t lowercase).
     /// `i` is 1-based; negative i returns the reverse complement.
     /// `buf` must be at least `kh->len + 1` bytes (NUL terminator).
     /// Returns `buf` on success.
     pub fn kmerHashSeq(kh: *mut KmerHash, i: I64, buf: *mut c_char) -> *mut c_char;
+
+    /// Re-exports of static-inline destroy helpers from seqhash.h.
+    /// syng marks `seqhashDestroy` and `seqhashIteratorDestroy` `static`,
+    /// preventing direct FFI calls. Our `syng_helpers.c` wraps them.
+    pub fn syng_rs_seqhash_destroy(sh: *mut Seqhash);
+    pub fn syng_rs_seqhash_iterator_destroy(si: *mut SeqhashIterator);
 }
 
 // ─── syng.h (SyngBWT API) ─────────────────────────────────────────────────────

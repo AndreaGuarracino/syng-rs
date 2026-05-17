@@ -8,8 +8,10 @@
  * Compiled with -DONEIO by build.rs alongside the rest of vendor/syng.
  */
 
-/* syng.h transitively includes kmerhash.h via syncmerset.h. */
+/* syng.h transitively includes kmerhash.h via syncmerset.h. seqhash.h
+ * has Seqhash + SeqhashIterator types we need for the destroy helpers. */
 #include "syng.h"
+#include "seqhash.h"
 
 /* `syngSchemaText` is `static char *` in syng.h. Each translation unit gets
  * its own copy with internal linkage; the symbol is not exported. Returning
@@ -67,4 +69,16 @@ U32 syng_rs_gbwt_path_file(const SyngBWT *sb, I64 path_idx) {
 
 U32 syng_rs_gbwt_path_id(const SyngBWT *sb, I64 path_idx) {
     return arrp(sb->path, (U64)path_idx, SyngPath)->path;
+}
+
+/* `seqhashDestroy` and `seqhashIteratorDestroy` are `static` in
+ * seqhash.h (lines 38, 51), so they have internal linkage and Rust FFI
+ * cannot call them across the .o boundary. Re-export through this TU
+ * which can see the inline definitions. */
+void syng_rs_seqhash_destroy(Seqhash *sh) {
+    seqhashDestroy(sh);
+}
+
+void syng_rs_seqhash_iterator_destroy(SeqhashIterator *si) {
+    seqhashIteratorDestroy(si);
 }
