@@ -46,3 +46,25 @@ I64 syng_rs_gbwt_path_count(const SyngBWT *sb) {
 int syng_rs_gbwt_fixed_len(const SyngBWT *sb) {
     return sb->fixedLen;
 }
+
+/* Per-path metadata accessors.
+ *
+ * sb->path is an Array of SyngPath { U32 file; U32 path; U64 length; }
+ * (defined in syng.h). The Array is opaque to Rust; arrp() / arr() macros
+ * yield pointers/values from the array. We expose each field individually so
+ * Rust doesn't have to know the struct layout.
+ *
+ * path_idx is 0-based (matches C convention) and MUST be < arrayMax(sb->path).
+ * No bounds checking here; callers must validate.
+ */
+U64 syng_rs_gbwt_path_length(const SyngBWT *sb, I64 path_idx) {
+    return arrp(sb->path, (U64)path_idx, SyngPath)->length;
+}
+
+U32 syng_rs_gbwt_path_file(const SyngBWT *sb, I64 path_idx) {
+    return arrp(sb->path, (U64)path_idx, SyngPath)->file;
+}
+
+U32 syng_rs_gbwt_path_id(const SyngBWT *sb, I64 path_idx) {
+    return arrp(sb->path, (U64)path_idx, SyngPath)->path;
+}

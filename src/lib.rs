@@ -165,6 +165,12 @@ extern "C" {
     pub fn syng_rs_gbwt_path_count(sb: *const SyngBWT) -> I64;
     /// Fixed syncmer length on the GBWT, or 0 if variable-length.
     pub fn syng_rs_gbwt_fixed_len(sb: *const SyngBWT) -> c_int;
+    /// bp length of path `path_idx` (0-based; < gbwt_path_count).
+    pub fn syng_rs_gbwt_path_length(sb: *const SyngBWT, path_idx: I64) -> U64;
+    /// Source-file index of path `path_idx` (which input FASTA contributed it).
+    pub fn syng_rs_gbwt_path_file(sb: *const SyngBWT, path_idx: I64) -> U32;
+    /// Sequence index within the source file (1-based per syng's writer).
+    pub fn syng_rs_gbwt_path_id(sb: *const SyngBWT, path_idx: I64) -> U32;
 }
 
 #[cfg(test)]
