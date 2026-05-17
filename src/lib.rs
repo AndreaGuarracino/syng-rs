@@ -155,6 +155,10 @@ extern "C" {
 // linkage). Our `src/syng_helpers.c` re-exports it via a non-static accessor.
 extern "C" {
     pub fn syng_rs_schema_text() -> *const c_char;
+    /// Number of stored syncmers (kh->max). Wraps the kmerHashMax(kh) macro.
+    pub fn syng_rs_kmer_hash_max(kh: *const KmerHash) -> I64;
+    /// Syncmer length in bases (kh->len). Useful for sizing DNA buffers.
+    pub fn syng_rs_kmer_hash_len(kh: *const KmerHash) -> c_int;
 }
 
 #[cfg(test)]
