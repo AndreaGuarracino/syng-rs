@@ -216,6 +216,16 @@ extern "C" {
     pub fn syng_rs_gbwt_path_file(sb: *const SyngBWT, path_idx: I64) -> U32;
     /// Sequence index within the source file (1-based per syng's writer).
     pub fn syng_rs_gbwt_path_id(sb: *const SyngBWT, path_idx: I64) -> U32;
+
+    /// Current GBWT rank of the cursor (sbp->jLast). Pass to
+    /// `syngBWTpathStartOld(thisNode, jLast)` to re-enter at this point.
+    pub fn syng_rs_path_jlast(sbp: *const SyngBWTpath) -> U32;
+    /// Node the cursor is about to read next (sbp->thisNode).
+    pub fn syng_rs_path_this_node(sbp: *const SyngBWTpath) -> I32;
+    /// Node the cursor just read (sbp->lastNode).
+    pub fn syng_rs_path_last_node(sbp: *const SyngBWTpath) -> I32;
+    /// Offset of the last edge traversed (sbp->lastOff).
+    pub fn syng_rs_path_last_off(sbp: *const SyngBWTpath) -> U32;
 }
 
 #[cfg(test)]

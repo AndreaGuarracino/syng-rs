@@ -71,6 +71,26 @@ U32 syng_rs_gbwt_path_id(const SyngBWT *sb, I64 path_idx) {
     return arrp(sb->path, (U64)path_idx, SyngPath)->path;
 }
 
+/* SyngBWTpath cursor accessors. The struct is publicly defined in syng.h
+ * but Rust treats it as opaque (we don't want layout coupling). These let
+ * sidecar builders snapshot the GBWT cursor state at sample points so the
+ * cursor can be re-entered later via syngBWTpathStartOld(thisNode, jLast). */
+U32 syng_rs_path_jlast(const SyngBWTpath *sbp) {
+    return sbp->jLast;
+}
+
+I32 syng_rs_path_this_node(const SyngBWTpath *sbp) {
+    return sbp->thisNode;
+}
+
+I32 syng_rs_path_last_node(const SyngBWTpath *sbp) {
+    return sbp->lastNode;
+}
+
+U32 syng_rs_path_last_off(const SyngBWTpath *sbp) {
+    return sbp->lastOff;
+}
+
 /* `seqhashDestroy` and `seqhashIteratorDestroy` are `static` in
  * seqhash.h (lines 38, 51), so they have internal linkage and Rust FFI
  * cannot call them across the .o boundary. Re-export through this TU
