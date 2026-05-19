@@ -164,9 +164,8 @@ extern "C" {
     /// Walk forward one step from `(node, abs_rank)`. Writes the next
     /// node, the bp offset along the edge, and the absolute rank at the
     /// destination. Returns false at path end. bp offsets are full U32
-    /// when the underlying edge directory is rskip; the SIMPLE-side fast
-    /// path still uses U16 offsets but only triggers for unique edges
-    /// whose bp gap fits in 16 bits.
+    /// on both the SIMPLE-side fast path and the rskip-directory path
+    /// (NodeSide widened to U32 in syng `02c6f81`).
     pub fn syngBWTpathRankStep(
         sb: *mut SyngBWT,
         node: I32,
