@@ -43,9 +43,18 @@ pub struct KmerHash {
 pub struct SyngBWT {
     _private: [u8; 0],
 }
+/// Path-walk state, mirrors `SyngBWTpath` in `syng.h`.
+///
+/// Field order/types match the C struct so a Rust-allocated value can be
+/// handed to `syngBWTpathNext` and the mutated fields read back here.
 #[repr(C)]
 pub struct SyngBWTpath {
-    _private: [u8; 0],
+    pub sb: *mut SyngBWT,
+    pub last_node: I32,
+    pub this_node: I32,
+    pub last_off: U32,
+    pub j_last: U32,
+    pub j_max: U32,
 }
 #[repr(C)]
 pub struct OneFile {
@@ -138,6 +147,34 @@ extern "C" {
 
     pub fn syngBWTpathDestroy(sbp: *mut SyngBWTpath);
     pub fn syngBWTstat(sb: *mut SyngBWT);
+
+    /// Given a node, the incoming edge it was reached on
+    /// `(prev_node, prev_off)`, and a local traversal rank, write the
+    /// absolute incoming rank of that edge across the GBWT for `node`.
+    /// Returns false on a bad node id.
+    pub fn syngBWTpathRankIncoming(
+        sb: *mut SyngBWT,
+        node: I32,
+        prev_node: I32,
+        prev_off: U32,
+        local_rank: U32,
+        abs_rank: *mut U32,
+    ) -> bool;
+
+    /// Walk forward one step from `(node, abs_rank)`. Writes the next
+    /// node, the bp offset along the edge, and the absolute rank at the
+    /// destination. Returns false at path end. bp offsets are full U32
+    /// when the underlying edge directory is rskip; the SIMPLE-side fast
+    /// path still uses U16 offsets but only triggers for unique edges
+    /// whose bp gap fits in 16 bits.
+    pub fn syngBWTpathRankStep(
+        sb: *mut SyngBWT,
+        node: I32,
+        abs_rank: U32,
+        next_node: *mut I32,
+        next_off: *mut U32,
+        next_abs_rank: *mut U32,
+    ) -> bool;
 
     pub fn syngBWTlocFind(
         sb: *mut SyngBWT,
